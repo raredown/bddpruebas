@@ -13,6 +13,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -60,16 +61,60 @@ public class AccesoBD extends HttpServlet {
                 resultado = preparada.executeQuery();
                 if (resultado.next()) {
                     Aves avecita = new Aves();
-                   
+
                     avecita.setAnilla(resultado.getString("anilla"));
                     avecita.setEspecie(resultado.getString("nombre"));
+                    avecita.setFecha(resultado.getString("fecha"));
+                    avecita.setLugar(resultado.getString("lugar"));
                     request.setAttribute("aves", avecita);
                     request.getRequestDispatcher("jsp/UnaAve.jsp").forward(request, response);
                 } else {
+                    request.setAttribute("error", "No ahi niguna q se llame asi en la tabla");
                     request.getRequestDispatcher("jsp/Errores.jsp").forward(request, response);
                 }
+                preparada.close();
+                resultado.close();
+            } else if (request.getParameter("toda") != null) {
+                String sql = "select * from aves";
+                preparada = conexion.prepareStatement(sql);
+                resultado = preparada.executeQuery();
+                ArrayList<Aves> array = new ArrayList();
+                while (resultado.next()) {
+                    Aves avecita = new Aves();
+
+                    avecita.setAnilla(resultado.getString("anilla"));
+                    avecita.setEspecie(resultado.getString("nombre"));
+                    avecita.setFecha(resultado.getString("fecha"));
+                    avecita.setLugar(resultado.getString("lugar"));
+                    //request.setAttribute("aves", avecita);
+                    array.add(avecita);
+                }
+                request.setAttribute("pollos", array);
+                request.getRequestDispatcher("jsp/TodaAve.jsp").forward(request, response);
+                preparada.close();
+                resultado.close();
+            } else if (request.getParameter("aleatorio") != null) {
+                String sql = "SELECT * FROM aves ORDER BY RAND() LIMIT " + request.getParameter("numero");
+                preparada = conexion.prepareStatement(sql);
+                resultado = preparada.executeQuery();
+                ArrayList<Aves> array = new ArrayList();
+                while (resultado.next()) {
+                    Aves avecita = new Aves();
+
+                    avecita.setAnilla(resultado.getString("anilla"));
+                    avecita.setEspecie(resultado.getString("nombre"));
+                    avecita.setFecha(resultado.getString("fecha"));
+                    avecita.setLugar(resultado.getString("lugar"));
+                    //request.setAttribute("aves", avecita);
+                    array.add(avecita);
+                }
+                request.setAttribute("pollos", array);
+                request.getRequestDispatcher("jsp/TodaAve.jsp").forward(request, response);
+                preparada.close();
+                resultado.close();
             }
 
+            conexion.close();
         } catch (SQLException ex) {
             Logger.getLogger(AccesoBD.class.getName()).log(Level.SEVERE, null, ex);
         }

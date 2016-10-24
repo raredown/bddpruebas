@@ -13,5 +13,6 @@
     </head>
     <body>
         <h1>Error!</h1>
+        <h2><%=request.getAttribute("error") %></h2>
     </body>
 </html>

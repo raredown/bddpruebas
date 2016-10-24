@@ -13,6 +13,7 @@ public class Aves implements java.io.Serializable {
     private String anilla;
     private String especie;
     private String lugar;
+    private String fecha;
 
     public String getAnilla() {
         return anilla;
@@ -45,6 +46,6 @@ public class Aves implements java.io.Serializable {
     public void setFecha(String fecha) {
         this.fecha = fecha;
     }
-    private String fecha;
+  
     
 }
